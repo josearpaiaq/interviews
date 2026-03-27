@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Senior Golang Developer – Technical Interview</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --card: #21253a;
+      --border: #2e3350;
+      --accent: #00d4aa;
+      --accent2: #5b8dee;
+      --warn: #f5a623;
+      --text: #e8eaf0;
+      --muted: #8892a8;
+      --tag-go: #00add8;
+      --tag-arch: #7c6af7;
+      --tag-grpc: #f06292;
+      --tag-perf: #4caf50;
+      --tag-beh: #ff8a65;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #12162a 0%, #1a2040 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 32px 24px;
+    }
+
+    .company-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 212, 170, .12);
+      border: 1px solid rgba(0, 212, 170, .3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: .5px;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+    }
+
+    h1 span {
+      color: var(--accent);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta-item strong {
+      color: var(--text);
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 28px;
+    }
+
+    .prog-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .prog-label span:last-child {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .prog-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      transition: width .4s ease;
+    }
+
+    .section-dots {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .dot.active {
+      background: var(--accent);
+    }
+
+    .dot.done {
+      background: var(--accent2);
+    }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .section-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .section-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--border);
+      border-radius: 99px;
+      padding: 3px 10px;
+    }
+
+    /* ── Question card ── */
+    .q-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: border-color .2s;
+    }
+
+    .q-card:hover {
+      border-color: rgba(0, 212, 170, .3);
+    }
+
+    .q-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .q-num {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(91, 141, 238, .15);
+      border: 1px solid rgba(91, 141, 238, .3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent2);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .q-text {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .q-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      letter-spacing: .3px;
+    }
+
+    .tag-go {
+      background: rgba(0, 173, 216, .15);
+      color: var(--tag-go);
+    }
+
+    .tag-arch {
+      background: rgba(124, 106, 247, .15);
+      color: var(--tag-arch);
+    }
+
+    .tag-grpc {
+      background: rgba(240, 98, 146, .15);
+      color: var(--tag-grpc);
+    }
+
+    .tag-perf {
+      background: rgba(76, 175, 80, .15);
+      color: var(--tag-perf);
+    }
+
+    .tag-beh {
+      background: rgba(255, 138, 101, .15);
+      color: var(--tag-beh);
+    }
+
+    .tag-dist {
+      background: rgba(245, 166, 35, .15);
+      color: var(--warn);
+    }
+
+    .diff {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-weight: 600;
+      margin-left: auto;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    .diff-med {
+      background: rgba(245, 166, 35, .15);
+      color: var(--warn);
+    }
+
+    .diff-hard {
+      background: rgba(240, 98, 146, .15);
+      color: var(--tag-grpc);
+    }
+
+    .diff-easy {
+      background: rgba(76, 175, 80, .15);
+      color: var(--tag-perf);
+    }
+
+    .chevron {
+      color: var(--muted);
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: transform .25s;
+      align-self: flex-start;
+      margin-top: 2px;
+    }
+
+    .q-card.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    /* ── Answer ── */
+    .q-answer {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 18px 20px 20px;
+      background: rgba(0, 0, 0, .2);
+    }
+
+    .q-card.open .q-answer {
+      display: block;
+    }
+
+    .answer-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .8px;
+      margin-bottom: 10px;
+    }
+
+    .answer-body {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #cdd0db;
+    }
+
+    .answer-body ul {
+      padding-left: 18px;
+      margin: 6px 0;
+    }
+
+    .answer-body li {
+      margin-bottom: 4px;
+    }
+
+    .answer-body code {
+      background: rgba(91, 141, 238, .18);
+      color: #a8c8ff;
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 13px;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+    }
+
+    .answer-body pre {
+      background: #10131f;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin: 10px 0;
+      overflow-x: auto;
+      font-size: 13px;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      color: #a8c8ff;
+      line-height: 1.6;
+    }
+
+    .follow-up {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: rgba(91, 141, 238, .08);
+      border-left: 3px solid var(--accent2);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .follow-up-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent2);
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+
+    .follow-up ul {
+      padding-left: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .follow-up li {
+      margin-bottom: 3px;
+    }
+
+    /* ── Section tabs ── */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f1117;
+      border-color: var(--accent);
+    }
+
+    .section-block {
+      display: none;
+    }
+
+    .section-block.visible {
+      display: block;
+    }
+
+    /* ── Tips box ── */
+    .tips-box {
+      background: rgba(0, 212, 170, .06);
+      border: 1px solid rgba(0, 212, 170, .2);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-top: 28px;
+    }
+
+    .tips-box h3 {
+      font-size: 14px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .tips-box ul {
+      padding-left: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="company-badge">🏢 Unique Vacations · Direct Hire</div>
+    <h1>Senior <span>Golang</span> Developer — Technical Interview</h1>
+    <div class="meta">
+      <div class="meta-item">📍 <strong>Panama City, PA / San Pedro Sula, HN</strong></div>
+      <div class="meta-item">💰 <strong>$30,000–$35,000/yr</strong></div>
+      <div class="meta-item">🏗 <strong>Microservices · gRPC · Distributed Systems</strong></div>
+      <div class="meta-item">⏱ <strong>~90 min interview</strong></div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="prog-label"><span>Interview Progress</span><span id="prog-text">0 / 20 reviewed</span></div>
+      <div class="prog-bar">
+        <div class="prog-fill" id="prog-fill" style="width:0%"></div>
+      </div>
+      <div class="section-dots" id="dots"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showSection('golang')">🐹 Go Core</button>
+      <button class="tab-btn" onclick="showSection('micro')">🧩 Microservices</button>
+      <button class="tab-btn" onclick="showSection('grpc')">⚡ gRPC</button>
+      <button class="tab-btn" onclick="showSection('perf')">🚀 Performance</button>
+      <button class="tab-btn" onclick="showSection('beh')">🤝 Behavioral</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════ GO CORE ══ -->
+    <div class="section-block visible" id="sec-golang">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(0,173,216,.15)">🐹</div>
+        <div>
+          <div class="section-title">Go Core & Concurrency</div>
+          <div class="section-sub">Language fundamentals, goroutines, channels, memory model</div>
+        </div>
+        <div class="section-count">5 questions</div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">1</div>
+          <div class="q-text">
+            Explain the difference between goroutines and OS threads. How does the Go runtime scheduler (M:N model)
+            work?
+            <div class="q-tags"><span class="tag tag-go">Go Runtime</span><span class="tag tag-go">Concurrency</span>
+            </div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Goroutines are user-space threads managed by the Go runtime, starting at ~2 KB of stack (growing
+            dynamically), while OS threads start at ~1–8 MB. The Go scheduler implements an <strong>M:N model</strong>:
+            M goroutines multiplexed on N OS threads (Ps – logical processors).
+            <ul>
+              <li><strong>G</strong> – goroutine (the unit of work)</li>
+              <li><strong>M</strong> – OS thread (machine)</li>
+              <li><strong>P</strong> – processor (holds a run queue, context for scheduling)</li>
+            </ul>
+            The scheduler uses <em>work-stealing</em>: idle Ps steal goroutines from busy Ps' run queues. Goroutines
+            yield at I/O, function calls, channel operations, and <code>runtime.Gosched()</code>.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What triggers a goroutine to be preempted in Go 1.14+?</li>
+              <li>What is <code>GOMAXPROCS</code> and when would you tune it?</li>
+              <li>How do you detect goroutine leaks in production?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">2</div>
+          <div class="q-text">
+            When would you choose a buffered channel over an unbuffered one? Walk me through a real scenario from your
+            experience.
+            <div class="q-tags"><span class="tag tag-go">Channels</span><span class="tag tag-go">Concurrency
+                Patterns</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <strong>Unbuffered:</strong> strict synchronization — sender blocks until receiver is ready. Good for
+            signaling (<em>"handshake"</em>) or ensuring the other side acknowledged.
+            <br><br>
+            <strong>Buffered:</strong> decouples producer/consumer up to the buffer size. Good for:
+            <ul>
+              <li><em>Worker pools</em> – enqueue N tasks without blocking the dispatcher until workers catch up.</li>
+              <li><em>Rate limiting</em> – token bucket pattern.</li>
+              <li><em>Batch ingestion</em> – collect log events and flush periodically.</li>
+            </ul>
+            Candidate should mention the risk of <strong>goroutine leaks</strong> if a sender writes to a buffered
+            channel but no consumer drains it, and how <code>select + default</code> or <code>context</code>
+            cancellation prevents deadlocks.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you implement a fan-out / fan-in pattern in Go?</li>
+              <li>What happens if you close a channel that has pending writers?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">3</div>
+          <div class="q-text">
+            How does Go handle memory management and garbage collection? What tuning knobs are available to a senior
+            engineer?
+            <div class="q-tags"><span class="tag tag-go">Memory</span><span class="tag tag-perf">GC</span></div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Go uses a <strong>tri-color mark-and-sweep concurrent GC</strong>. Key points:
+            <ul>
+              <li>GC pauses are short (sub-millisecond) due to concurrent marking.</li>
+              <li><code>GOGC</code> (default 100) controls heap growth ratio before next GC. Lowering it reduces memory
+                at the cost of more frequent GC cycles; raising it does the opposite.</li>
+              <li><code>GOMEMLIMIT</code> (Go 1.19+) sets a soft memory cap — crucial in containerized environments.
+              </li>
+              <li>Escape analysis: allocations that escape to heap vs. stay on stack. Use
+                <code>go build -gcflags="-m"</code> to inspect.
+              </li>
+              <li>Reduce allocations: use <code>sync.Pool</code> for short-lived objects, prefer value types over
+                pointers where appropriate, preallocate slices.</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you profile heap allocations? (<code>pprof</code>, <code>runtime/trace</code>)</li>
+              <li>What is <code>sync.Pool</code> and what are its caveats?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">4</div>
+          <div class="q-text">
+            Describe idiomatic error handling in Go and how you'd design a multi-layer service (handler → service →
+            repository) to propagate and wrap errors effectively.
+            <div class="q-tags"><span class="tag tag-go">Error Handling</span><span class="tag tag-arch">Clean
+                Architecture</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Go treats errors as values. Senior engineers should mention:
+            <ul>
+              <li><code>fmt.Errorf("context: %w", err)</code> for wrapping (Go 1.13+).</li>
+              <li><code>errors.Is</code> / <code>errors.As</code> for inspection at call sites.</li>
+              <li>Sentinel errors (<code>var ErrNotFound = errors.New("not found")</code>) vs. custom error types.</li>
+              <li>In a layered service, the <em>repository</em> returns domain-level errors (e.g.,
+                <code>ErrNotFound</code>); the <em>service</em> wraps with context and may convert to gRPC status codes;
+                the <em>handler</em> maps to HTTP/gRPC response.
+              </li>
+            </ul>
+            <pre>// Repository
+if err != nil {
+    return fmt.Errorf("userRepo.FindByID %d: %w", id, ErrNotFound)
+}
+
+// Service
+if errors.Is(err, repo.ErrNotFound) {
+    return nil, status.Errorf(codes.NotFound, "user %d not found", id)
+}</pre>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>When would you use <code>panic/recover</code>? Where is it appropriate?</li>
+              <li>How do you ensure errors carry a request trace ID through layers?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">5</div>
+          <div class="q-text">
+            What are Go interfaces, and how do you design them to keep code testable and loosely coupled?
+            <div class="q-tags"><span class="tag tag-go">Interfaces</span><span class="tag tag-arch">Testability</span>
+            </div>
+          </div>
+          <span class="diff diff-easy">Easy</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Interfaces are satisfied implicitly — no explicit declaration. Senior engineers should mention:
+            <ul>
+              <li><em>Interface segregation</em>: keep interfaces small, focused on consumer needs (<em>"accept
+                  interfaces, return structs"</em>).</li>
+              <li>Define interfaces in the <strong>consumer</strong> package, not the provider package.</li>
+              <li>Use interfaces to inject mock dependencies in unit tests without heavy frameworks.</li>
+              <li>Embedding interfaces for composition and extending functionality.</li>
+            </ul>
+            Red flag: defining large, monolithic interfaces that mirror an entire struct.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What is the empty interface <code>any</code> and when is its use a code smell?</li>
+              <li>How does Go 1.18 generics compare to interface-based polymorphism?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ MICROSERVICES ══ -->
+    <div class="section-block" id="sec-micro">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(124,106,247,.15)">🧩</div>
+        <div>
+          <div class="section-title">Microservices & Distributed Systems</div>
+          <div class="section-sub">Service design, patterns, resilience, observability</div>
+        </div>
+        <div class="section-count">5 questions</div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">6</div>
+          <div class="q-text">
+            How do you decompose a monolith into microservices? What heuristics do you use for service boundaries?
+            <div class="q-tags"><span class="tag tag-arch">Domain Design</span><span class="tag tag-arch">DDD</span>
+            </div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Strong answer references <strong>Domain-Driven Design (DDD)</strong> bounded contexts as the primary
+            heuristic — each service owns a cohesive subdomain. Additional signals:
+            <ul>
+              <li><em>Team ownership</em>: Conway's Law — services map to team boundaries.</li>
+              <li><em>Change rate</em>: pieces that change independently should be separate services.</li>
+              <li><em>Scalability needs</em>: services with different load profiles.</li>
+              <li><em>Data ownership</em>: each service has its own datastore — avoid shared databases.</li>
+            </ul>
+            Candidate should also mention the cost of distribution (network latency, eventual consistency) and that not
+            everything needs to be a microservice.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you handle transactions that span multiple services? (Saga pattern)</li>
+              <li>What is the Strangler Fig pattern?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">7</div>
+          <div class="q-text">
+            How do you implement resilience patterns (circuit breaker, retry with backoff, bulkhead) in a Go service?
+            <div class="q-tags"><span class="tag tag-arch">Resilience</span><span
+                class="tag tag-dist">Distributed</span></div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <ul>
+              <li><strong>Retry with exponential backoff + jitter</strong>: avoid thundering herd. Library:
+                <code>github.com/cenkalti/backoff</code>.
+              </li>
+              <li><strong>Circuit Breaker</strong>: three states — Closed, Open, Half-Open. Library:
+                <code>github.com/sony/gobreaker</code>.
+              </li>
+              <li><strong>Bulkhead</strong>: isolate resources per downstream — separate goroutine pools / semaphores
+                per dependency using a buffered channel as a semaphore.</li>
+              <li><strong>Timeout propagation</strong>: always use <code>context.WithTimeout</code>, never block
+                indefinitely on an RPC call.</li>
+            </ul>
+            <pre>// Semaphore bulkhead
+sem := make(chan struct{}, maxConcurrent)
+sem <- struct{}{}  // acquire
+defer func() { <-sem }()  // release</pre>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you propagate context cancellation across gRPC calls?</li>
+              <li>How does a service mesh (Istio/Linkerd) relate to in-process resilience patterns?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">8</div>
+          <div class="q-text">
+            Describe your approach to distributed tracing and observability. How do you instrument a Go service?
+            <div class="q-tags"><span class="tag tag-arch">Observability</span><span
+                class="tag tag-dist">OpenTelemetry</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            The three pillars: <strong>Logs, Metrics, Traces</strong>.
+            <ul>
+              <li><strong>Traces</strong>: use <strong>OpenTelemetry</strong> Go SDK — create spans, propagate context
+                via W3C Trace Context headers over gRPC metadata.</li>
+              <li><strong>Metrics</strong>: Prometheus client library (<code>prometheus/client_golang</code>) —
+                counters, histograms (latency), gauges.</li>
+              <li><strong>Logs</strong>: structured JSON logs (<code>zap</code> or <code>slog</code>), always include
+                <code>trace_id</code> and <code>span_id</code> for correlation.
+              </li>
+              <li><strong>Health checks</strong>: <code>/healthz</code> (liveness) and <code>/readyz</code> (readiness).
+              </li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What is the difference between liveness and readiness probes?</li>
+              <li>How do you implement SLOs and error budgets?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">9</div>
+          <div class="q-text">
+            How do you handle service discovery and configuration management in a microservices architecture?
+            <div class="q-tags"><span class="tag tag-dist">Service Discovery</span><span
+                class="tag tag-arch">Config</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <ul>
+              <li><strong>Service discovery</strong>: client-side (Consul, etcd) or server-side (Kubernetes DNS /
+                kube-proxy). In K8s, services are resolved by DNS name automatically.</li>
+              <li><strong>Config</strong>: 12-factor app — environment variables, or a config service (Vault, AWS SSM,
+                Consul KV). Never hardcode credentials; use secrets management.</li>
+              <li><strong>Dynamic config</strong>: feature flags or config hot-reload using watchers (Consul watch,
+                Viper + remote provider).</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you roll out a config change without restarting a service?</li>
+              <li>How do you manage secrets rotation?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">10</div>
+          <div class="q-text">
+            Walk me through the data consistency strategies you've used when a business operation spans multiple
+            microservices.
+            <div class="q-tags"><span class="tag tag-dist">Saga</span><span class="tag tag-arch">Consistency</span>
+            </div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Distributed transactions without two-phase commit (avoid due to tight coupling):
+            <ul>
+              <li><strong>Saga pattern</strong>: sequence of local transactions, each publishing events. Choreography
+                (event-driven) vs. Orchestration (central coordinator).</li>
+              <li><strong>Outbox pattern</strong>: write event atomically to a local DB table (outbox) alongside the
+                domain object. A relay process polls and publishes to the broker — guarantees at-least-once delivery.
+              </li>
+              <li><strong>Idempotency keys</strong>: ensure re-delivered messages don't cause duplicate state changes.
+              </li>
+              <li>Embrace <strong>eventual consistency</strong>; design UX to accommodate it (optimistic UI,
+                compensating actions).</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What is the difference between choreography and orchestration sagas? Trade-offs?</li>
+              <li>How do you implement compensating transactions?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ gRPC ══ -->
+    <div class="section-block" id="sec-grpc">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(240,98,146,.15)">⚡</div>
+        <div>
+          <div class="section-title">gRPC & API Design</div>
+          <div class="section-sub">Protocol Buffers, streaming, interceptors, versioning</div>
+        </div>
+        <div class="section-count">4 questions</div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">11</div>
+          <div class="q-text">
+            Compare gRPC to REST. When would you choose one over the other for inter-service communication?
+            <div class="q-tags"><span class="tag tag-grpc">gRPC</span><span class="tag tag-arch">API Design</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <strong>gRPC advantages</strong>: strongly-typed contracts (Protobuf), HTTP/2 multiplexing, bi-directional
+            streaming, smaller payload, built-in code generation, easy deadline/cancellation propagation.
+            <br><br>
+            <strong>REST advantages</strong>: human-readable, universal tooling, easier for external APIs and browser
+            clients.
+            <br><br>
+            <strong>Choose gRPC for</strong>: internal service-to-service calls requiring high throughput, streaming
+            (e.g., real-time feeds), polyglot environments.
+            <br>
+            <strong>Choose REST for</strong>: public APIs, webhooks, clients you don't control, simpler CRUD endpoints.
+            <br><br>
+            Mention <strong>gRPC-Gateway</strong> for exposing a REST façade over gRPC services.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What are the four gRPC communication patterns?</li>
+              <li>How does gRPC handle load balancing? (L7 vs L4)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">12</div>
+          <div class="q-text">
+            How do you implement authentication and authorization in a gRPC service using interceptors?
+            <div class="q-tags"><span class="tag tag-grpc">Interceptors</span><span class="tag tag-arch">Security</span>
+            </div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            gRPC interceptors are middleware — <strong>UnaryInterceptor</strong> for unary calls,
+            <strong>StreamInterceptor</strong> for streams. Chain multiple with <code>grpc.ChainUnaryInterceptor</code>.
+            <pre>func AuthInterceptor(ctx context.Context, req interface{},
+  info *grpc.UnaryServerInfo, handler grpc.UnaryHandler,
+) (interface{}, error) {
+  md, _ := metadata.FromIncomingContext(ctx)
+  token := md["authorization"]
+  claims, err := validateJWT(token[0])
+  if err != nil {
+    return nil, status.Errorf(codes.Unauthenticated, "invalid token")
+  }
+  ctx = context.WithValue(ctx, claimsKey, claims)
+  return handler(ctx, req)
+}</pre>
+            <ul>
+              <li>Use <strong>mTLS</strong> for service-to-service transport security.</li>
+              <li>Use <strong>JWT</strong> in metadata for user identity.</li>
+              <li>Authorization logic lives in the service layer, not the interceptor.</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you propagate auth context downstream to other gRPC services?</li>
+              <li>What is the difference between mTLS and application-level auth?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">13</div>
+          <div class="q-text">
+            How do you version a Protobuf API without breaking existing clients?
+            <div class="q-tags"><span class="tag tag-grpc">Protobuf</span><span class="tag tag-arch">API
+                Versioning</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            Protobuf is designed for backward/forward compatibility if you follow the rules:
+            <ul>
+              <li>Never reuse or change the numeric field tag of an existing field.</li>
+              <li>Adding new fields is safe — old clients ignore unknown fields.</li>
+              <li>Removing fields: mark as <code>reserved</code> to prevent tag reuse.</li>
+              <li>For major breaking changes, create a new package version (<code>v2</code>) — e.g.,
+                <code>booking.v2.BookingService</code>.
+              </li>
+              <li>Use <code>google.protobuf.FieldMask</code> for partial updates to reduce coupling.</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you test Protobuf schema compatibility in CI?</li>
+              <li>What is <code>buf</code> and how does it help enforce API conventions?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">14</div>
+          <div class="q-text">
+            Describe how you'd implement server-side streaming in gRPC for a real-time event feed. What are the failure
+            modes to handle?
+            <div class="q-tags"><span class="tag tag-grpc">Streaming</span><span class="tag tag-dist">Real-time</span>
+            </div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <pre>// Proto
+rpc WatchEvents(WatchRequest) returns (stream Event);
+
+// Server implementation
+func (s *Server) WatchEvents(req *pb.WatchRequest,
+  stream pb.EventService_WatchEventsServer) error {
+  for {
+    select {
+    case event := <-s.eventCh:
+      if err := stream.Send(event); err != nil {
+        return err // client disconnected
+      }
+    case <-stream.Context().Done():
+      return stream.Context().Err()
+    }
+  }
+}</pre>
+            <strong>Failure modes to handle:</strong>
+            <ul>
+              <li><em>Client disconnect</em>: check <code>stream.Context().Done()</code> or <code>Send()</code> error.
+              </li>
+              <li><em>Slow consumers</em>: use a bounded buffer; drop or backpressure slow clients.</li>
+              <li><em>Reconnect logic</em>: clients should implement exponential backoff reconnect with a cursor/offset
+                to resume from last processed event.</li>
+              <li><em>Deadline exceeded</em>: honor the RPC deadline set by the caller.</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How would you implement bi-directional streaming? Give a use case.</li>
+              <li>How does gRPC's flow control work under HTTP/2?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ PERFORMANCE ══ -->
+    <div class="section-block" id="sec-perf">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(76,175,80,.15)">🚀</div>
+        <div>
+          <div class="section-title">Performance & Reliability</div>
+          <div class="section-sub">Profiling, benchmarking, database, caching, clean architecture</div>
+        </div>
+        <div class="section-count">4 questions</div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">15</div>
+          <div class="q-text">
+            Walk me through how you'd diagnose and fix a latency spike in a production Go service.
+            <div class="q-tags"><span class="tag tag-perf">Profiling</span><span class="tag tag-perf">pprof</span></div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <strong>Systematic approach:</strong>
+            <ol style="padding-left:18px">
+              <li>Check distributed traces (Jaeger/Tempo) to isolate which span is slow.</li>
+              <li>Check metrics: p99 latency per endpoint, downstream error rates.</li>
+              <li>Enable <code>net/http/pprof</code> endpoint, capture CPU/heap/goroutine profiles.</li>
+              <li>Analyze with <code>go tool pprof -http :8080 cpu.prof</code> — flame graph shows hot paths.</li>
+              <li>Look for: lock contention (<code>sync/mutex</code> profile), excessive allocations (heap profile),
+                goroutine pile-up (goroutine profile).</li>
+              <li>Write a benchmark (<code>testing.B</code>) to isolate and measure the fix.</li>
+            </ol>
+            Common culprits: unbounded connection pools, missing DB indexes, JSON marshaling in hot paths (swap to
+            Protobuf or <code>easyjson</code>), GC pressure from large allocations.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you safely enable pprof in production without security risk?</li>
+              <li>What is <code>runtime/trace</code> and how does it differ from pprof?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">16</div>
+          <div class="q-text">
+            How would you design a caching layer for a high-read backend service? What cache invalidation strategies
+            would you use?
+            <div class="q-tags"><span class="tag tag-perf">Caching</span><span class="tag tag-dist">Redis</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <ul>
+              <li><strong>In-process cache</strong>: <code>sync.Map</code> or <code>ristretto</code> — ultra-low
+                latency, bounded memory. Good for small, frequently accessed, rarely changing data.</li>
+              <li><strong>Distributed cache</strong>: Redis — shared across service replicas, supports pub/sub
+                invalidation.</li>
+              <li><strong>Cache-aside pattern</strong>: service checks cache → on miss, loads from DB → writes to cache.
+              </li>
+              <li><strong>Invalidation strategies</strong>: TTL (simple, may serve stale), event-driven invalidation
+                (write-through / publish invalidation event on mutation), cache versioning.</li>
+              <li><strong>Stampede protection</strong>: on a cold cache, many goroutines hit the DB simultaneously. Use
+                <code>singleflight.Group</code> to coalesce concurrent requests for the same key.
+              </li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What is a cache stampede (thundering herd) and how does <code>golang.org/x/sync/singleflight</code>
+                solve it?</li>
+              <li>When would you choose write-through vs. write-back caching?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q17 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">17</div>
+          <div class="q-text">
+            Describe how you structure a Go project for clean architecture. How do you enforce layer boundaries?
+            <div class="q-tags"><span class="tag tag-arch">Clean Architecture</span><span class="tag tag-go">Project
+                Structure</span></div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            A common layout (Hexagonal / Clean Architecture):
+            <pre>service/
+├── cmd/           # main.go, DI wiring
+├── internal/
+│   ├── domain/    # entities, value objects, repo interfaces
+│   ├── app/       # use cases / services (pure business logic)
+│   ├── adapters/
+│   │   ├── grpc/  # gRPC handlers (inbound)
+│   │   ├── http/  # REST handlers (inbound)
+│   │   └── db/    # repository implementations (outbound)
+│   └── config/
+└── pkg/           # shared libraries</pre>
+            <ul>
+              <li>Dependency rule: inner layers (<code>domain</code>, <code>app</code>) must never import outer layers.
+              </li>
+              <li>Use interfaces in <code>domain</code> for repositories; implementations in <code>adapters/db</code>.
+              </li>
+              <li>Enforce boundaries via Go's package visibility and linters like <code>go-cleanarch</code>.</li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do you handle dependency injection in Go without a DI framework?</li>
+              <li>What is your approach to testing the application layer in isolation?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q18 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">18</div>
+          <div class="q-text">
+            How do you design a graceful shutdown for a Go service handling in-flight gRPC and async worker goroutines?
+            <div class="q-tags"><span class="tag tag-go">Lifecycle</span><span class="tag tag-perf">Reliability</span>
+            </div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ANSWER</div>
+          <div class="answer-body">
+            <pre>func main() {
+  ctx, cancel := signal.NotifyContext(
+    context.Background(), syscall.SIGTERM, syscall.SIGINT,
+  )
+  defer cancel()
+
+  // Start server, workers...
+  go server.Serve(lis)
+
+  <-ctx.Done() // wait for signal
+
+  // 1. Stop accepting new gRPC connections
+  server.GracefulStop()
+
+  // 2. Cancel context propagated to workers
+  cancel()
+
+  // 3. Wait for in-flight workers to finish
+  wg.Wait()
+
+  log.Info("shutdown complete")
+}</pre>
+            Key points: <code>signal.NotifyContext</code> (Go 1.16+), <code>GracefulStop</code> waits for active RPCs,
+            <code>sync.WaitGroup</code> for async goroutines, <strong>shutdown deadline</strong> with a second timeout
+            context to avoid hanging forever.
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>How do Kubernetes SIGTERM + preStop hooks interact with your shutdown logic?</li>
+              <li>How do you drain a message queue consumer gracefully?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════ BEHAVIORAL ══ -->
+    <div class="section-block" id="sec-beh">
+      <div class="section-header">
+        <div class="section-icon" style="background:rgba(255,138,101,.15)">🤝</div>
+        <div>
+          <div class="section-title">Behavioral & System Design</div>
+          <div class="section-sub">Leadership, decision-making, system design under constraints</div>
+        </div>
+        <div class="section-count">2 questions</div>
+      </div>
+
+      <!-- Q19 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">19</div>
+          <div class="q-text">
+            Tell me about a time you led a technically complex backend project from design to deployment. What decisions
+            did you own and what would you do differently?
+            <div class="q-tags"><span class="tag tag-beh">Leadership</span><span class="tag tag-beh">Ownership</span>
+            </div>
+          </div>
+          <span class="diff diff-med">Medium</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ WHAT TO LISTEN FOR</div>
+          <div class="answer-body">
+            Strong signals:
+            <ul>
+              <li>Candidate articulates the <em>problem context</em> and <em>constraints</em> clearly (STAR format).
+              </li>
+              <li>Mentions specific technical trade-offs they made and why (not just "I used X").</li>
+              <li>Shows cross-team coordination (product, DevOps, QA).</li>
+              <li>Demonstrates ownership: monitoring, incident response, iteration post-launch.</li>
+              <li>Self-critical reflection on what they'd do differently — shows growth mindset.</li>
+            </ul>
+            Red flags: vague answers without technical depth, "we" without personal ownership, blaming others for
+            failures.
+          </div>
+        </div>
+      </div>
+
+      <!-- Q20 -->
+      <div class="q-card">
+        <div class="q-header" onclick="toggle(this)">
+          <div class="q-num">20</div>
+          <div class="q-text">
+            <strong>System Design:</strong> Design a booking confirmation service for a travel company (like Unique
+            Vacations). It must process ~10,000 bookings/day, send confirmation emails/SMS, and integrate with external
+            vendor APIs. Walk me through your architecture.
+            <div class="q-tags"><span class="tag tag-arch">System Design</span><span
+                class="tag tag-dist">Async</span><span class="tag tag-grpc">gRPC</span></div>
+          </div>
+          <span class="diff diff-hard">Hard</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="q-answer">
+          <div class="answer-label">✦ IDEAL ARCHITECTURE POINTS</div>
+          <div class="answer-body">
+            <ul>
+              <li><strong>Inbound</strong>: gRPC <code>BookingService</code> receives booking events from upstream
+                services.</li>
+              <li><strong>Async processing</strong>: publish to a message queue (Kafka/NATS) to decouple confirmation
+                processing from the booking flow.</li>
+              <li><strong>Workers</strong>: Go consumer goroutines read from queue — fan-out to email worker and SMS
+                worker.</li>
+              <li><strong>External vendor APIs</strong>: circuit breakers + retries; store vendor call results in a
+                <code>vendor_responses</code> table for audit.
+              </li>
+              <li><strong>Idempotency</strong>: use <code>booking_id</code> as idempotency key — prevent duplicate sends
+                on requeue.</li>
+              <li><strong>Persistence</strong>: PostgreSQL for booking state; outbox pattern for event publishing.</li>
+              <li><strong>Observability</strong>: metrics (confirmation success rate, vendor latency), traces per
+                booking, alerting on DLQ (Dead Letter Queue) growth.</li>
+              <li><strong>Scale</strong>: 10K/day ≈ ~0.1 TPS — well within a single service; design for 10x headroom.
+              </li>
+            </ul>
+          </div>
+          <div class="follow-up">
+            <div class="follow-up-label">↳ FOLLOW-UP PROBES</div>
+            <ul>
+              <li>What happens if the email vendor is down for 2 hours? How do you handle the backlog?</li>
+              <li>How do you prevent a customer from receiving duplicate confirmation emails?</li>
+              <li>How would your design change if volume grew to 1M bookings/day?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tips -->
+    <div class="tips-box">
+      <h3>💡 Interview Tips for This Role</h3>
+      <ul>
+        <li>Emphasize <strong>ownership</strong> — this role involves decisions from design through deployment.</li>
+        <li>Use specific numbers and trade-offs in your answers, not just pattern names.</li>
+        <li>Mention your experience with containerization (Docker/Kubernetes) and CI/CD pipelines.</li>
+        <li>Be ready to write actual Go code snippets — have your concurrency patterns memorized.</li>
+        <li>Prepare a system design story from your past work that maps closely to this travel domain.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script>
+    const totalQ = 20;
+    let opened = new Set();
+
+    function toggle(header) {
+      const card = header.parentElement;
+      const isOpen = card.classList.contains('open');
+      card.classList.toggle('open', !isOpen);
+      const idx = [...document.querySelectorAll('.q-card')].indexOf(card);
+      if (!isOpen) opened.add(idx); else opened.delete(idx);
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const pct = Math.round((opened.size / totalQ) * 100);
+      document.getElementById('prog-fill').style.width = pct + '%';
+      document.getElementById('prog-text').textContent = opened.size + ' / ' + totalQ + ' reviewed';
+    }
+
+    const sections = ['golang', 'micro', 'grpc', 'perf', 'beh'];
+    function showSection(id) {
+      sections.forEach(s => {
+        document.getElementById('sec-' + s).classList.toggle('visible', s === id);
+      });
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', sections[i] === id);
+      });
+    }
+  </script>
+</body>
+
+</html>
