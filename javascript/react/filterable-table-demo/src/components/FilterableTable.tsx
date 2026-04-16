@@ -41,7 +41,7 @@ export function FilterableTable() {
 
   return (
     <div>
-      <SearchBar value={query} onChange={handleSearch} />
+      <SearchBar onChange={handleSearch} />
       <SortControls sortConfig={sortConfig} onSort={handleSort} />
       <ProductList items={filteredAndSorted} />
     </div>

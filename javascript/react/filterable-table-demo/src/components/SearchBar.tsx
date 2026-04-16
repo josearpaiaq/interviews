@@ -1,18 +1,30 @@
-import { memo } from "react";
+import { memo, useEffect, useState } from "react";
+import { useDebounce } from "../hooks/useDebounce";
 
 interface Props {
-  value: string;
   onChange: (value: string) => void;
 }
 
-function SearchBar({ value, onChange }: Props) {
+function SearchBar({ onChange }: Props) {
   console.log("render: SearchBar");
+  const [value, setValue] = useState("");
+
+  const debouncedValue = useDebounce(value, 300);
+
+  useEffect(() => {
+    onChange(debouncedValue);
+  }, [debouncedValue, onChange]);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(event.target.value);
+  };
+
   return (
     <input
       type="text"
       placeholder="Search products..."
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={handleChange}
     />
   );
 }
