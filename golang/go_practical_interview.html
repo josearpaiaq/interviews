@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Go Practical Interview</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0c0e14;
+  --surface: #13161f;
+  --card: #191d2a;
+  --border: #252a3d;
+  --border2: #2e3450;
+  --go: #00acd7;
+  --go2: #00d4aa;
+  --accent: #f0c040;
+  --red: #ff5c7a;
+  --green: #4ecb8d;
+  --purple: #a78bfa;
+  --text: #e2e5f0;
+  --muted: #7a82a0;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── BG TEXTURE ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 20%, rgba(0,172,215,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 90% 80%, rgba(0,212,170,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ─── HEADER ─── */
+header {
+  position: relative; z-index: 10;
+  padding: 28px 40px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  background: rgba(13,15,20,.85);
+  backdrop-filter: blur(12px);
+}
+.logo {
+  display: flex; align-items: center; gap: 12px;
+}
+.gopher {
+  width: 42px; height: 42px; background: linear-gradient(135deg, var(--go), var(--go2));
+  border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.logo-text { font-family: var(--display); font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
+.logo-text span { color: var(--go); }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.level-badge {
+  background: rgba(240,192,64,.12); border: 1px solid rgba(240,192,64,.3);
+  color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .8px;
+  padding: 5px 14px; border-radius: 99px; font-family: var(--mono);
+}
+.progress-pill {
+  background: var(--card); border: 1px solid var(--border2);
+  padding: 6px 16px; border-radius: 99px;
+  font-size: 13px; font-family: var(--mono); color: var(--muted);
+}
+.progress-pill strong { color: var(--go2); }
+
+/* ─── LAYOUT ─── */
+.main { position: relative; z-index: 1; display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 85px); }
+
+/* ─── SIDEBAR ─── */
+aside {
+  border-right: 1px solid var(--border);
+  padding: 24px 0;
+  background: rgba(19,22,31,.7);
+  overflow-y: auto;
+  position: sticky; top: 85px; height: calc(100vh - 85px);
+}
+.sidebar-section { padding: 0 16px 20px; }
+.sidebar-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted);
+  padding: 0 8px; margin-bottom: 8px; display: block;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  cursor: pointer; transition: all .2s;
+  border: 1px solid transparent; margin-bottom: 4px;
+}
+.nav-item:hover { background: rgba(255,255,255,.04); }
+.nav-item.active {
+  background: rgba(0,172,215,.1);
+  border-color: rgba(0,172,215,.2);
+}
+.nav-item.done { opacity: .6; }
+.nav-num {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-family: var(--mono); font-weight: 500;
+  background: var(--border2); color: var(--muted);
+}
+.nav-item.active .nav-num { background: var(--go); color: #fff; }
+.nav-item.done .nav-num { background: var(--green); color: #fff; }
+.nav-item.needs-work .nav-num { background: var(--red); color: #fff; }
+.nav-info { flex: 1; min-width: 0; }
+.nav-title { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-tag { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+.nav-score { font-size: 12px; font-family: var(--mono); font-weight: 600; }
+
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 16px 20px; }
+
+.score-summary {
+  background: var(--card); border: 1px solid var(--border2); border-radius: 12px;
+  padding: 14px; margin: 0 16px;
+}
+.score-summary-title { font-size: 11px; color: var(--muted); letter-spacing: .5px; margin-bottom: 10px; font-weight: 600; }
+.score-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.score-bar-label { font-size: 11px; color: var(--muted); width: 60px; flex-shrink: 0; }
+.score-bar-track { flex: 1; height: 4px; background: var(--border2); border-radius: 99px; overflow: hidden; }
+.score-bar-fill { height: 100%; border-radius: 99px; transition: width .5s ease; background: var(--go2); }
+.score-bar-val { font-size: 11px; font-family: var(--mono); color: var(--text); width: 28px; text-align: right; }
+
+/* ─── CONTENT ─── */
+.content { padding: 32px 40px; overflow-y: auto; }
+
+/* ─── CHALLENGE CARD ─── */
+.challenge-wrap { max-width: 860px; }
+
+.challenge-header { margin-bottom: 24px; }
+.challenge-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ch-number { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.ch-category {
+  font-size: 11px; font-weight: 700; letter-spacing: .6px;
+  padding: 3px 10px; border-radius: 99px;
+}
+.cat-concurrency { background: rgba(0,172,215,.15); color: var(--go); }
+.cat-patterns    { background: rgba(167,139,250,.15); color: var(--purple); }
+.cat-errors      { background: rgba(78,203,141,.15); color: var(--green); }
+.cat-perf        { background: rgba(240,192,64,.15); color: var(--accent); }
+.cat-design      { background: rgba(255,92,122,.15); color: var(--red); }
+
+.ch-diff {
+  margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 10px;
+  border-radius: 99px; font-family: var(--mono);
+}
+.diff-med  { background: rgba(240,192,64,.12); color: var(--accent); }
+
+.challenge-title { font-family: var(--display); font-size: 26px; font-weight: 800; letter-spacing: -.5px; line-height: 1.2; }
+
+.challenge-body {
+  background: var(--card); border: 1px solid var(--border2); border-radius: 16px;
+  overflow: hidden; margin-bottom: 20px;
+}
+.challenge-desc { padding: 22px 24px; border-bottom: 1px solid var(--border); }
+.challenge-desc p { font-size: 15px; line-height: 1.7; color: #c8cedd; margin-bottom: 12px; }
+.challenge-desc p:last-child { margin-bottom: 0; }
+
+.context-block {
+  background: rgba(0,172,215,.05); border-left: 3px solid var(--go);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0;
+  font-size: 14px; color: var(--muted); line-height: 1.6;
+}
+.context-block strong { color: var(--text); }
+
+/* tasks */
+.tasks-wrap { padding: 18px 24px; border-bottom: 1px solid var(--border); }
+.tasks-title { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; }
+.task-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.5; color: #c8cedd; }
+.task-check {
+  width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid var(--border2);
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  font-size: 11px; cursor: pointer; transition: all .2s;
+}
+.task-check.checked { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* starter code */
+.starter-wrap { padding: 18px 24px; }
+.starter-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+.copy-btn {
+  font-size: 11px; color: var(--go); cursor: pointer; padding: 3px 10px;
+  border: 1px solid rgba(0,172,215,.3); border-radius: 6px; transition: all .2s;
+  background: none; font-family: var(--mono);
+}
+.copy-btn:hover { background: rgba(0,172,215,.1); }
+pre.starter {
+  background: #0e1118; border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 18px; font-family: var(--mono); font-size: 13px; line-height: 1.65;
+  overflow-x: auto; color: #a8c8ff;
+}
+/* syntax colors */
+.kw { color: #c792ea; }
+.fn { color: #82aaff; }
+.ty { color: #ffcb6b; }
+.cm { color: #546e7a; font-style: italic; }
+.st { color: #c3e88d; }
+.nb { color: #f78c6c; }
+
+/* ─── EDITOR ─── */
+.editor-section { margin-bottom: 20px; }
+.editor-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.editor-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+textarea.code-editor {
+  width: 100%;
+  min-height: 260px;
+  background: #0e1118;
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-family: var(--mono); font-size: 13px; line-height: 1.65;
+  color: #e2e5f0;
+  resize: vertical;
+  outline: none;
+  transition: border-color .2s;
+  tab-size: 4;
+}
+textarea.code-editor:focus { border-color: var(--go); }
+textarea.code-editor::placeholder { color: #3a4060; }
+
+/* ─── ACTIONS ─── */
+.actions { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all .2s; border: none; font-family: var(--sans);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--go), var(--go2));
+  color: #0c0e14;
+}
+.btn-primary:hover { opacity: .9; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: var(--card); border: 1px solid var(--border2); color: var(--muted);
+}
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--card); }
+.btn-next {
+  background: rgba(78,203,141,.12); border: 1px solid rgba(78,203,141,.3); color: var(--green);
+  margin-left: auto;
+}
+.btn-next:hover { background: rgba(78,203,141,.2); }
+
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── EVALUATION ─── */
+.eval-wrap {
+  background: var(--card); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden;
+  animation: fadeUp .35s ease;
+}
+@keyframes fadeUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+.eval-header {
+  padding: 16px 22px; display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.eval-score-ring {
+  width: 56px; height: 56px; flex-shrink: 0;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 20px; font-weight: 700;
+  border: 3px solid;
+}
+.score-great { border-color: var(--green); color: var(--green); background: rgba(78,203,141,.1); }
+.score-ok    { border-color: var(--accent); color: var(--accent); background: rgba(240,192,64,.1); }
+.score-low   { border-color: var(--red); color: var(--red); background: rgba(255,92,122,.1); }
+
+.eval-meta { flex: 1; }
+.eval-title { font-family: var(--display); font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.eval-subtitle { font-size: 13px; color: var(--muted); }
+.eval-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.badge {
+  font-size: 11px; padding: 2px 9px; border-radius: 99px; font-weight: 600;
+  font-family: var(--mono);
+}
+.badge-green { background: rgba(78,203,141,.15); color: var(--green); }
+.badge-yellow{ background: rgba(240,192,64,.12); color: var(--accent); }
+.badge-red   { background: rgba(255,92,122,.12); color: var(--red); }
+
+.eval-body { padding: 20px 22px; }
+
+.eval-section { margin-bottom: 18px; }
+.eval-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px; color: var(--muted);
+  margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+}
+.eval-section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.eval-text { font-size: 14px; line-height: 1.7; color: #c8cedd; }
+.eval-text ul { padding-left: 18px; }
+.eval-text li { margin-bottom: 5px; }
+.eval-text code {
+  background: rgba(91,141,238,.18); color: #a8c8ff;
+  border-radius: 5px; padding: 1px 6px; font-size: 12px; font-family: var(--mono);
+}
+
+.improved-code-wrap { margin-top: 10px; }
+pre.improved-code {
+  background: #0e1118; border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; font-family: var(--mono); font-size: 13px; line-height: 1.6;
+  overflow-x: auto; color: #a8c8ff; white-space: pre-wrap; word-break: break-word;
+}
+
+.loading-eval {
+  padding: 40px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.loading-dots { display: flex; gap: 8px; }
+.loading-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--go);
+  animation: bounce .8s ease infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: .15s; }
+.loading-dot:nth-child(3) { animation-delay: .3s; }
+@keyframes bounce { 0%,80%,100%{ transform:scale(0.6); opacity:.4 } 40%{ transform:scale(1); opacity:1 } }
+.loading-text { font-size: 14px; color: var(--muted); font-family: var(--mono); }
+
+/* ─── HINT ─── */
+.hint-wrap {
+  background: rgba(167,139,250,.06); border: 1px solid rgba(167,139,250,.2);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
+  animation: fadeUp .3s ease;
+}
+.hint-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: .8px; margin-bottom: 8px; }
+.hint-text { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.hint-text code { color: var(--purple); font-family: var(--mono); font-size: 13px; }
+
+/* ─── COMPLETE SCREEN ─── */
+.complete-screen {
+  display: none; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 40px; text-align: center;
+}
+.complete-screen.visible { display: flex; }
+.complete-trophy { font-size: 64px; margin-bottom: 16px; animation: pop .4s cubic-bezier(.36,.07,.19,.97); }
+@keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+.complete-title { font-family: var(--display); font-size: 36px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+.complete-sub { font-size: 16px; color: var(--muted); margin-bottom: 32px; }
+.final-scores {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; max-width: 500px; margin-bottom: 28px;
+}
+.final-score-card {
+  background: var(--card); border: 1px solid var(--border2); border-radius: 14px; padding: 18px 12px; text-align: center;
+}
+.fsc-val { font-family: var(--mono); font-size: 30px; font-weight: 700; color: var(--go2); }
+.fsc-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .main { grid-template-columns: 1fr; }
+  aside { display: none; }
+  .content { padding: 20px 16px; }
+  header { padding: 16px 20px; }
+  .challenge-title { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="gopher">🐹</div>
+    <div class="logo-text"><span>Go</span> Practical Interview</div>
+  </div>
+  <div class="header-right">
+    <span class="level-badge">MEDIUM</span>
+    <span class="progress-pill"><strong id="hdr-done">0</strong>/6 done</span>
+  </div>
+</header>
+
+<div class="main">
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-section">
+      <span class="sidebar-label">CHALLENGES</span>
+      <div id="nav-list"></div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="score-summary">
+        <div class="score-summary-title">YOUR SCORES</div>
+        <div id="score-bars"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div id="challenge-area" class="challenge-wrap"></div>
+    <div id="complete-area" class="complete-screen"></div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// CHALLENGES DATA
+// ════════════════════════════════════════════════════════
+const challenges = [
+  {
+    id: 0,
+    title: "Worker Pool",
+    category: "concurrency",
+    categoryLabel: "Concurrency",
+    desc: `You need to process a list of jobs concurrently but want to limit how many run at the same time — like a real backend service handling API requests.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> Unbounded goroutines can exhaust memory or overwhelm downstream services. A worker pool is a fundamental Go concurrency pattern used in every production backend.</div>`,
+    tasks: [
+      "Implement <code>workerPool(jobs []int, workers int) []int</code>",
+      "Use goroutines and channels — no external libraries",
+      "Each job squares the number (job * job)",
+      "Return results in any order, but all jobs must be processed",
+      "Make sure there are no goroutine leaks"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// workerPool processes jobs concurrently using N workers.
+// Each job value should be squared (job * job).
+// Return a slice with all results (order doesn't matter).</span>
+<span class="kw">func</span> <span class="fn">workerPool</span>(jobs []<span class="ty">int</span>, workers <span class="ty">int</span>) []<span class="ty">int</span> {
+    <span class="cm">// TODO: implement</span>
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    jobs := []<span class="ty">int</span>{<span class="nb">1</span>, <span class="nb">2</span>, <span class="nb">3</span>, <span class="nb">4</span>, <span class="nb">5</span>, <span class="nb">6</span>, <span class="nb">7</span>, <span class="nb">8</span>}
+    results := <span class="fn">workerPool</span>(jobs, <span class="nb">3</span>)
+    fmt.<span class="fn">Println</span>(results) <span class="cm">// e.g. [1 4 9 16 25 36 49 64] (any order)</span>
+}`,
+    starterPlain: `package main
+
+import "fmt"
+
+// workerPool processes jobs concurrently using N workers.
+// Each job value should be squared (job * job).
+// Return a slice with all results (order doesn't matter).
+func workerPool(jobs []int, workers int) []int {
+    // TODO: implement
+    return nil
+}
+
+func main() {
+    jobs := []int{1, 2, 3, 4, 5, 6, 7, 8}
+    results := workerPool(jobs, 3)
+    fmt.Println(results) // e.g. [1 4 9 16 25 36 49 64] (any order)
+}`,
+    hint: `Think in three steps: (1) create a <code>jobs</code> channel and send all job values into it, (2) launch exactly <code>workers</code> goroutines that each read from the jobs channel and write to a <code>results</code> channel, (3) use a <code>sync.WaitGroup</code> to know when all workers are done so you can close the results channel and collect.`
+  },
+  {
+    id: 1,
+    title: "Context-aware HTTP client",
+    category: "patterns",
+    categoryLabel: "Patterns",
+    desc: `In production, every outbound call must respect a timeout and be cancellable. A common bug is making HTTP calls with no deadline — if the remote hangs, your service hangs too.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> Context propagation is the backbone of Go's cancellation model. Every gRPC/HTTP call in a microservice should use the incoming context.</div>`,
+    tasks: [
+      "Implement <code>fetchWithContext(ctx context.Context, url string) (string, error)</code>",
+      "Use the provided context for the HTTP request — respect cancellation",
+      "Return the response body as a string on success",
+      "Return a wrapped error on failure (use <code>fmt.Errorf</code> with <code>%w</code>)",
+      "Properly close the response body"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"io"</span>
+    <span class="st">"net/http"</span>
+)
+
+<span class="cm">// fetchWithContext makes an HTTP GET to url using ctx.
+// Returns the body as string, or a wrapped error.</span>
+<span class="kw">func</span> <span class="fn">fetchWithContext</span>(ctx <span class="ty">context.Context</span>, url <span class="ty">string</span>) (<span class="ty">string</span>, <span class="ty">error</span>) {
+    <span class="cm">// TODO: implement</span>
+    <span class="kw">return</span> <span class="st">""</span>, <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    ctx, cancel := context.<span class="fn">WithTimeout</span>(context.<span class="fn">Background</span>(), <span class="nb">3</span>*time.Second)
+    <span class="kw">defer</span> <span class="fn">cancel</span>()
+
+    body, err := <span class="fn">fetchWithContext</span>(ctx, <span class="st">"https://httpbin.org/get"</span>)
+    <span class="kw">if</span> err != <span class="nb">nil</span> {
+        fmt.<span class="fn">Println</span>(<span class="st">"error:"</span>, err)
+        <span class="kw">return</span>
+    }
+    fmt.<span class="fn">Println</span>(body[:100])
+}`,
+    starterPlain: `package main
+
+import (
+    "context"
+    "fmt"
+    "io"
+    "net/http"
+)
+
+// fetchWithContext makes an HTTP GET to url using ctx.
+// Returns the body as string, or a wrapped error.
+func fetchWithContext(ctx context.Context, url string) (string, error) {
+    // TODO: implement
+    return "", nil
+}`,
+    hint: `Use <code>http.NewRequestWithContext(ctx, "GET", url, nil)</code> to create a request bound to the context, then execute it with <code>http.DefaultClient.Do(req)</code>. Don't forget to <code>defer resp.Body.Close()</code> and read the body with <code>io.ReadAll</code>.`
+  },
+  {
+    id: 2,
+    title: "Custom Error Types",
+    category: "errors",
+    categoryLabel: "Errors",
+    desc: `Good error handling in Go means errors carry context and can be inspected by callers. This challenge tests whether you know the difference between sentinel errors, wrapped errors, and custom types.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> In a layered service (handler → service → repo), each layer needs to translate errors correctly — e.g. turn a DB "not found" into a gRPC <code>codes.NotFound</code>.</div>`,
+    tasks: [
+      "Define a <code>NotFoundError</code> struct with an <code>ID</code> field and implement the <code>error</code> interface",
+      "Define a <code>ValidationError</code> struct with a <code>Field</code> and <code>Message</code>",
+      "Implement <code>findUser(id int) error</code> that returns <code>NotFoundError</code> if id > 100",
+      "Implement <code>createUser(name string) error</code> that returns <code>ValidationError</code> if name is empty",
+      "In <code>main</code>, use <code>errors.As</code> to inspect which error type you got"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"errors"</span>
+    <span class="st">"fmt"</span>
+)
+
+<span class="cm">// TODO: define NotFoundError struct</span>
+
+<span class="cm">// TODO: define ValidationError struct</span>
+
+<span class="cm">// findUser returns NotFoundError if id > 100</span>
+<span class="kw">func</span> <span class="fn">findUser</span>(id <span class="ty">int</span>) <span class="ty">error</span> {
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="cm">// createUser returns ValidationError if name is empty</span>
+<span class="kw">func</span> <span class="fn">createUser</span>(name <span class="ty">string</span>) <span class="ty">error</span> {
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// Test findUser and createUser
+    // Use errors.As to inspect the error type</span>
+}`,
+    starterPlain: `package main
+
+import (
+    "errors"
+    "fmt"
+)
+
+// TODO: define NotFoundError struct
+
+// TODO: define ValidationError struct
+
+// findUser returns NotFoundError if id > 100
+func findUser(id int) error {
+    return nil
+}
+
+// createUser returns ValidationError if name is empty
+func createUser(name string) error {
+    return nil
+}
+
+func main() {
+    // Test findUser and createUser
+    // Use errors.As to inspect the error type
+}`,
+    hint: `A struct implements the <code>error</code> interface by having an <code>Error() string</code> method. Use a pointer receiver: <code>func (e *NotFoundError) Error() string</code>. Then use <code>var nfe *NotFoundError; errors.As(err, &nfe)</code> to check the type.`
+  },
+  {
+    id: 3,
+    title: "Rate Limiter with Ticker",
+    category: "concurrency",
+    categoryLabel: "Concurrency",
+    desc: `You need to call an external API but it only allows 5 requests per second. Implement a simple token-bucket style rate limiter using Go's standard library.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> Rate limiting is everywhere in microservices — protecting downstream systems, honoring SLAs, and avoiding 429s from third-party APIs.</div>`,
+    tasks: [
+      "Implement a <code>RateLimiter</code> struct with a <code>NewRateLimiter(rps int)</code> constructor",
+      "Implement a <code>Wait(ctx context.Context) error</code> method that blocks until a token is available",
+      "Return <code>ctx.Err()</code> if context is cancelled while waiting",
+      "Use <code>time.Ticker</code> or a buffered channel — no external libraries",
+      "Show usage in <code>main</code> simulating 10 requests with a 3 RPS limiter"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="cm">// RateLimiter limits calls to rps requests per second.</span>
+<span class="kw">type</span> <span class="ty">RateLimiter</span> <span class="kw">struct</span> {
+    <span class="cm">// TODO</span>
+}
+
+<span class="kw">func</span> <span class="fn">NewRateLimiter</span>(rps <span class="ty">int</span>) *<span class="ty">RateLimiter</span> {
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> (rl *<span class="ty">RateLimiter</span>) <span class="fn">Wait</span>(ctx <span class="ty">context.Context</span>) <span class="ty">error</span> {
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    rl := <span class="fn">NewRateLimiter</span>(<span class="nb">3</span>) <span class="cm">// 3 requests per second</span>
+    ctx := context.<span class="fn">Background</span>()
+
+    <span class="kw">for</span> i := <span class="kw">range</span> <span class="nb">10</span> {
+        rl.<span class="fn">Wait</span>(ctx)
+        fmt.<span class="fn">Printf</span>(<span class="st">"request %d at %s\n"</span>, i, time.Now().<span class="fn">Format</span>(<span class="st">"15:04:05.000"</span>))
+    }
+}`,
+    starterPlain: `package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+type RateLimiter struct {
+    // TODO
+}
+
+func NewRateLimiter(rps int) *RateLimiter {
+    return nil
+}
+
+func (rl *RateLimiter) Wait(ctx context.Context) error {
+    return nil
+}
+
+func main() {
+    rl := NewRateLimiter(3) // 3 requests per second
+    ctx := context.Background()
+    for i := range 10 {
+        rl.Wait(ctx)
+        fmt.Printf("request %d at %s\n", i, time.Now().Format("15:04:05.000"))
+    }
+}`,
+    hint: `Store a <code>tokens chan struct{}</code> in your struct. In the constructor, start a goroutine with a <code>time.NewTicker(time.Second / rps)</code>; on each tick, try to send to <code>tokens</code> (non-blocking). In <code>Wait</code>, use a <code>select</code> to receive from <code>tokens</code> or return <code>ctx.Err()</code> if <code>ctx.Done()</code> fires.`
+  },
+  {
+    id: 4,
+    title: "Generic Stack",
+    category: "patterns",
+    categoryLabel: "Patterns",
+    desc: `Go 1.18 introduced generics. Implement a type-safe stack that works with any type — no <code>interface{}</code> or type assertions needed.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> Go generics eliminate the need for code generation or unsafe casting for common data structures. Knowing when and how to use them is a mark of modern Go fluency.</div>`,
+    tasks: [
+      "Implement <code>Stack[T any]</code> as a generic struct",
+      "Implement <code>Push(v T)</code>, <code>Pop() (T, bool)</code>, <code>Peek() (T, bool)</code>, and <code>Len() int</code>",
+      "<code>Pop</code> and <code>Peek</code> return <code>(zero value, false)</code> when empty",
+      "Demonstrate usage with both <code>int</code> and <code>string</code> stacks in <code>main</code>",
+      "No external libraries — standard library only"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="st">"fmt"</span>
+
+<span class="cm">// Stack is a generic LIFO data structure.</span>
+<span class="kw">type</span> <span class="ty">Stack</span>[T <span class="kw">any</span>] <span class="kw">struct</span> {
+    <span class="cm">// TODO</span>
+}
+
+<span class="kw">func</span> (s *<span class="ty">Stack</span>[T]) <span class="fn">Push</span>(v T) {}
+
+<span class="kw">func</span> (s *<span class="ty">Stack</span>[T]) <span class="fn">Pop</span>() (T, <span class="ty">bool</span>) {
+    <span class="kw">var</span> zero T
+    <span class="kw">return</span> zero, <span class="kw">false</span>
+}
+
+<span class="kw">func</span> (s *<span class="ty">Stack</span>[T]) <span class="fn">Peek</span>() (T, <span class="ty">bool</span>) {
+    <span class="kw">var</span> zero T
+    <span class="kw">return</span> zero, <span class="kw">false</span>
+}
+
+<span class="kw">func</span> (s *<span class="ty">Stack</span>[T]) <span class="fn">Len</span>() <span class="ty">int</span> { <span class="kw">return</span> <span class="nb">0</span> }
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    <span class="cm">// Demo with int stack and string stack</span>
+}`,
+    starterPlain: `package main
+
+import "fmt"
+
+// Stack is a generic LIFO data structure.
+type Stack[T any] struct {
+    // TODO
+}
+
+func (s *Stack[T]) Push(v T) {}
+
+func (s *Stack[T]) Pop() (T, bool) {
+    var zero T
+    return zero, false
+}
+
+func (s *Stack[T]) Peek() (T, bool) {
+    var zero T
+    return zero, false
+}
+
+func (s *Stack[T]) Len() int { return 0 }
+
+func main() {
+    // Demo with int stack and string stack
+}`,
+    hint: `Store items as <code>items []T</code>. For <code>Push</code>, append. For <code>Pop</code>, check length > 0, grab the last element, slice off one, return it. For <code>Peek</code>, same check but don't remove. The <code>var zero T</code> pattern gives you the zero value for any type.`
+  },
+  {
+    id: 5,
+    title: "Pipeline with Cancellation",
+    category: "concurrency",
+    categoryLabel: "Concurrency",
+    desc: `Combine multiple skills: build a 3-stage data pipeline (generate → transform → sink) where all stages respect context cancellation and don't leak goroutines.<br><br>
+<div class="context-block"><strong>Why this matters:</strong> Go pipelines are the gold standard for streaming data through a microservice — log processors, ETL jobs, real-time feeds. Cancellation makes them production-safe.</div>`,
+    tasks: [
+      "Implement <code>generate(ctx, nums...)</code> — sends ints to a channel, stops on ctx cancel",
+      "Implement <code>square(ctx, in <-chan int)</code> — squares each value, returns a new channel",
+      "Implement <code>sink(ctx, in <-chan int)</code> — prints each value with its arrival time",
+      "Wire them together in <code>main</code> with a 2-second timeout context",
+      "No goroutine should outlive the context cancellation"
+    ],
+    starter: `<span class="kw">package</span> main
+
+<span class="kw">import</span> (
+    <span class="st">"context"</span>
+    <span class="st">"fmt"</span>
+    <span class="st">"time"</span>
+)
+
+<span class="kw">func</span> <span class="fn">generate</span>(ctx <span class="ty">context.Context</span>, nums ...<span class="ty">int</span>) <-<span class="kw">chan</span> <span class="ty">int</span> {
+    <span class="cm">// TODO: send nums to a channel; close when done or ctx cancelled</span>
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">square</span>(ctx <span class="ty">context.Context</span>, in <-<span class="kw">chan</span> <span class="ty">int</span>) <-<span class="kw">chan</span> <span class="ty">int</span> {
+    <span class="cm">// TODO: square each value; close output when in is closed or ctx cancelled</span>
+    <span class="kw">return</span> <span class="nb">nil</span>
+}
+
+<span class="kw">func</span> <span class="fn">sink</span>(ctx <span class="ty">context.Context</span>, in <-<span class="kw">chan</span> <span class="ty">int</span>) {
+    <span class="cm">// TODO: print each value; return when in is closed or ctx cancelled</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    ctx, cancel := context.<span class="fn">WithTimeout</span>(context.<span class="fn">Background</span>(), <span class="nb">2</span>*time.Second)
+    <span class="kw">defer</span> <span class="fn">cancel</span>()
+
+    nums := []<span class="ty">int</span>{<span class="nb">1</span>,<span class="nb">2</span>,<span class="nb">3</span>,<span class="nb">4</span>,<span class="nb">5</span>,<span class="nb">6</span>,<span class="nb">7</span>,<span class="nb">8</span>,<span class="nb">9</span>,<span class="nb">10</span>}
+    <span class="fn">sink</span>(ctx, <span class="fn">square</span>(ctx, <span class="fn">generate</span>(ctx, nums...)))
+}`,
+    starterPlain: `package main
+
+import (
+    "context"
+    "fmt"
+    "time"
+)
+
+func generate(ctx context.Context, nums ...int) <-chan int {
+    // TODO: send nums to a channel; close when done or ctx cancelled
+    return nil
+}
+
+func square(ctx context.Context, in <-chan int) <-chan int {
+    // TODO: square each value; close output when in is closed or ctx cancelled
+    return nil
+}
+
+func sink(ctx context.Context, in <-chan int) {
+    // TODO: print each value; return when in is closed or ctx cancelled
+}
+
+func main() {
+    ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+    defer cancel()
+
+    nums := []int{1,2,3,4,5,6,7,8,9,10}
+    sink(ctx, square(ctx, generate(ctx, nums...)))
+}`,
+    hint: `Each stage follows the same pattern: create an output channel, launch a goroutine with <code>defer close(out)</code>, and inside loop with <code>select { case v, ok := <-in: ... case <-ctx.Done(): return }</code>. The key insight: closing a channel propagates the shutdown downstream through the pipeline automatically.`
+  }
+];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let current = 0;
+let scores = new Array(challenges.length).fill(null);
+let hintShown = new Array(challenges.length).fill(false);
+let answers = new Array(challenges.length).fill('');
+
+// ════════════════════════════════════════════════════════
+// RENDER
+// ════════════════════════════════════════════════════════
+function renderNav() {
+  const list = document.getElementById('nav-list');
+  list.innerHTML = challenges.map((c, i) => {
+    let cls = i === current ? 'active' : '';
+    if (scores[i] !== null) {
+      cls += scores[i] >= 7 ? ' done' : ' needs-work';
+    }
+    const catClass = `cat-${c.category}`;
+    const scoreHtml = scores[i] !== null ? `<span class="nav-score" style="color:${scores[i]>=7?'var(--green)':scores[i]>=5?'var(--accent)':'var(--red)'}">${scores[i]}/10</span>` : '';
+    return `<div class="nav-item ${cls}" onclick="goTo(${i})">
+      <div class="nav-num">${i+1}</div>
+      <div class="nav-info">
+        <div class="nav-title">${c.title}</div>
+        <div class="nav-tag">${c.categoryLabel}</div>
+      </div>
+      ${scoreHtml}
+    </div>`;
+  }).join('');
+
+  // score bars
+  const bars = document.getElementById('score-bars');
+  const categories = ['Concurrency','Patterns','Errors'];
+  const catMap = {Concurrency:[0,3,5], Patterns:[1,4], Errors:[2]};
+  bars.innerHTML = categories.map(cat => {
+    const ids = catMap[cat];
+    const done = ids.filter(i => scores[i] !== null);
+    const avg = done.length ? Math.round(done.reduce((a,i)=>a+(scores[i]||0),0)/done.length*10) : 0;
+    return `<div class="score-bar-row">
+      <span class="score-bar-label">${cat}</span>
+      <div class="score-bar-track"><div class="score-bar-fill" style="width:${avg}%"></div></div>
+      <span class="score-bar-val">${done.length ? Math.round(avg/10) : '-'}</span>
+    </div>`;
+  }).join('');
+
+  // header count
+  document.getElementById('hdr-done').textContent = scores.filter(s=>s!==null).length;
+}
+
+function renderChallenge() {
+  const c = challenges[current];
+  const area = document.getElementById('challenge-area');
+  const evalId = `eval-${c.id}`;
+
+  area.innerHTML = `
+  <div class="challenge-header">
+    <div class="challenge-eyebrow">
+      <span class="ch-number">CHALLENGE ${current+1} OF ${challenges.length}</span>
+      <span class="ch-category cat-${c.category}">${c.categoryLabel}</span>
+      <span class="ch-diff diff-med">MEDIUM</span>
+    </div>
+    <div class="challenge-title">${c.title}</div>
+  </div>
+
+  <div class="challenge-body">
+    <div class="challenge-desc"><p>${c.desc}</p></div>
+    <div class="tasks-wrap">
+      <div class="tasks-title">TASKS</div>
+      ${c.tasks.map((t,i)=>`
+        <div class="task-item">
+          <div class="task-check ${answers[current]?' checked':''}" onclick="toggleCheck(this)">✓</div>
+          <span>${t}</span>
+        </div>`).join('')}
+    </div>
+    <div class="starter-wrap">
+      <div class="starter-label">
+        STARTER CODE
+        <button class="copy-btn" onclick="copyStarter()">copy</button>
+      </div>
+      <pre class="starter">${c.starter}</pre>
+    </div>
+  </div>
+
+  <div class="editor-section" style="margin-top:20px">
+    <div class="editor-label">YOUR SOLUTION</div>
+    <textarea class="code-editor" id="editor-${c.id}" placeholder="Write your Go solution here..."
+      spellcheck="false">${answers[current]||''}</textarea>
+  </div>
+
+  ${hintShown[current] ? `
+  <div class="hint-wrap">
+    <div class="hint-label">💡 HINT</div>
+    <div class="hint-text">${c.hint}</div>
+  </div>` : ''}
+
+  <div class="actions">
+    <button class="btn btn-primary" id="submit-btn" onclick="submitSolution()">
+      <span>Evaluate Solution</span>
+    </button>
+    <button class="btn btn-ghost" onclick="showHint()">${hintShown[current]?'Hide hint':'Show hint'}</button>
+    ${current > 0 ? `<button class="btn btn-ghost" onclick="goTo(${current-1})">← Prev</button>` : ''}
+    ${current < challenges.length-1 ? `<button class="btn btn-next" onclick="goTo(${current+1})">Next challenge →</button>` : ''}
+  </div>
+
+  <div id="${evalId}"></div>
+  `;
+
+  // restore scroll
+  document.querySelector('.content').scrollTop = 0;
+}
+
+function goTo(i) {
+  saveAnswer();
+  current = i;
+  document.getElementById('complete-area').classList.remove('visible');
+  document.getElementById('challenge-area').style.display = '';
+  renderNav();
+  renderChallenge();
+}
+
+function saveAnswer() {
+  const ed = document.getElementById(`editor-${challenges[current].id}`);
+  if (ed) answers[current] = ed.value;
+}
+
+function copyStarter() {
+  navigator.clipboard.writeText(challenges[current].starterPlain);
+  const btn = document.querySelector('.copy-btn');
+  if (btn) { btn.textContent = 'copied!'; setTimeout(()=>btn.textContent='copy',1500); }
+}
+
+function toggleCheck(el) { el.classList.toggle('checked'); }
+
+function showHint() {
+  hintShown[current] = !hintShown[current];
+  saveAnswer();
+  renderChallenge();
+}
+
+// ════════════════════════════════════════════════════════
+// EVALUATE
+// ════════════════════════════════════════════════════════
+async function submitSolution() {
+  saveAnswer();
+  const code = answers[current];
+  if (!code || code.trim().length < 20) {
+    alert('Please write some code first!');
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span><span>Evaluating...</span>';
+
+  const evalDiv = document.getElementById(`eval-${challenges[current].id}`);
+  evalDiv.innerHTML = `<div class="eval-wrap"><div class="loading-eval">
+    <div class="loading-dots"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+    <div class="loading-text">reviewing your Go code...</div>
+  </div></div>`;
+
+  const c = challenges[current];
+  const prompt = `You are a senior Go engineer giving a practical coding interview. The candidate submitted a solution to this challenge.
+
+CHALLENGE: "${c.title}"
+TASKS:
+${c.tasks.map((t,i)=>`${i+1}. ${t.replace(/<[^>]+>/g,'')}`).join('\n')}
+
+CANDIDATE'S CODE:
+\`\`\`go
+${code}
+\`\`\`
+
+Evaluate their solution. Respond ONLY with valid JSON, no markdown backticks, no preamble. Format:
+{
+  "score": <integer 1-10>,
+  "verdict": "<one of: Strong, Good, Needs Work, Incomplete>",
+  "strengths": ["<specific strength about their actual code>", "..."],
+  "improvements": ["<specific actionable improvement with code example if useful>", "..."],
+  "key_concept": "<one core Go concept they should study based on their gaps>",
+  "improved_snippet": "<a short corrected/improved Go code snippet showing the main fix, if needed. Plain text, no markdown>",
+  "summary": "<2-3 sentence plain-English feedback mentioning what they got right and what to fix>"
+}
+
+Be honest and constructive. If code is empty or trivially wrong, score it 1-3. Medium-level expectations: correct use of channels/goroutines, no leaks, idiomatic Go patterns.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await resp.json();
+    const text = data.content.map(b => b.text || '').join('').trim().replace(/```json|```/g,'').trim();
+    let result;
+    try { result = JSON.parse(text); } catch(e) {
+      result = {
+        score: 5, verdict: 'Good',
+        strengths: ['Code submitted successfully'],
+        improvements: ['Could not parse full evaluation — review manually'],
+        key_concept: 'Review Go concurrency fundamentals',
+        improved_snippet: '',
+        summary: 'Your code was received. Please review it manually for correctness.'
+      };
+    }
+
+    scores[current] = result.score;
+    renderNav();
+    showEvaluation(evalDiv, result);
+
+  } catch(err) {
+    evalDiv.innerHTML = `<div class="eval-wrap"><div class="eval-body"><p style="color:var(--red)">Error contacting evaluator: ${err.message}</p></div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>Re-evaluate</span>';
+  }
+}
+
+function showEvaluation(container, r) {
+  const sc = r.score;
+  const ringClass = sc >= 7 ? 'score-great' : sc >= 5 ? 'score-ok' : 'score-low';
+  const verdictBadge = r.verdict === 'Strong' || r.verdict === 'Good' ? 'badge-green' :
+                       r.verdict === 'Needs Work' ? 'badge-yellow' : 'badge-red';
+
+  const strengthsHtml = (r.strengths||[]).map(s=>`<li>${s}</li>`).join('');
+  const improvementsHtml = (r.improvements||[]).map(s=>`<li>${s}</li>`).join('');
+  const snippetHtml = r.improved_snippet ? `
+    <div class="eval-section">
+      <div class="eval-section-title">IMPROVED CODE</div>
+      <div class="improved-code-wrap">
+        <pre class="improved-code">${escHtml(r.improved_snippet)}</pre>
+      </div>
+    </div>` : '';
+
+  const allDone = scores.every(s => s !== null);
+  const nextBtn = current < challenges.length - 1
+    ? `<button class="btn btn-next" style="margin-top:12px" onclick="goTo(${current+1})">Next challenge →</button>`
+    : allDone
+      ? `<button class="btn btn-primary" style="margin-top:12px" onclick="showComplete()">See Final Results 🏁</button>`
+      : '';
+
+  container.innerHTML = `<div class="eval-wrap">
+    <div class="eval-header">
+      <div class="eval-score-ring ${ringClass}">${sc}/10</div>
+      <div class="eval-meta">
+        <div class="eval-title">${r.summary||'Evaluation complete'}</div>
+        <div class="eval-badges">
+          <span class="badge ${verdictBadge}">${r.verdict}</span>
+          ${r.key_concept ? `<span class="badge badge-yellow">Study: ${r.key_concept}</span>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="eval-body">
+      <div class="eval-section">
+        <div class="eval-section-title">STRENGTHS</div>
+        <div class="eval-text"><ul>${strengthsHtml}</ul></div>
+      </div>
+      <div class="eval-section">
+        <div class="eval-section-title">IMPROVEMENTS</div>
+        <div class="eval-text"><ul>${improvementsHtml}</ul></div>
+      </div>
+      ${snippetHtml}
+      ${nextBtn}
+    </div>
+  </div>`;
+
+  container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ════════════════════════════════════════════════════════
+// COMPLETE
+// ════════════════════════════════════════════════════════
+function showComplete() {
+  document.getElementById('challenge-area').style.display = 'none';
+  const area = document.getElementById('complete-area');
+  const done = scores.filter(s=>s!==null).length;
+  const avg = done ? Math.round(scores.reduce((a,b)=>(a+(b||0)),0)/done*10)/10 : 0;
+  const best = Math.max(...scores.filter(s=>s!==null));
+  const emoji = avg >= 7.5 ? '🏆' : avg >= 5 ? '🎯' : '📚';
+  const msg = avg >= 7.5 ? 'Solid Go knowledge!' : avg >= 5 ? 'Good foundations — keep practicing!' : 'Great start — study the concepts above!';
+
+  area.innerHTML = `
+    <div class="complete-trophy">${emoji}</div>
+    <div class="complete-title">${msg}</div>
+    <div class="complete-sub">You completed ${done} of ${challenges.length} challenges</div>
+    <div class="final-scores">
+      <div class="final-score-card"><div class="fsc-val">${avg}</div><div class="fsc-label">Avg Score</div></div>
+      <div class="final-score-card"><div class="fsc-val">${done}/${challenges.length}</div><div class="fsc-label">Completed</div></div>
+      <div class="final-score-card"><div class="fsc-val">${best}</div><div class="fsc-label">Best Score</div></div>
+    </div>
+    <button class="btn btn-ghost" onclick="goTo(0)" style="margin-top:8px">← Review challenges</button>
+  `;
+  area.classList.add('visible');
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+renderNav();
+renderChallenge();
+</script>
+</body>
+</html>
