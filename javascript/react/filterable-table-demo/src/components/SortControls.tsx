@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { type SortConfig } from "./FilterableTable";
 
 interface Props {
@@ -5,7 +6,7 @@ interface Props {
   onSort: (key: SortConfig["key"]) => void;
 }
 
-export function SortControls({ sortConfig, onSort }: Props) {
+function SortControls({ sortConfig, onSort }: Props) {
   console.log("render: SortControls");
   const fields: SortConfig["key"][] = ["name", "category", "price"];
   return (
@@ -19,3 +20,5 @@ export function SortControls({ sortConfig, onSort }: Props) {
     </div>
   );
 }
+
+export default memo(SortControls);

@@ -1,11 +1,11 @@
-// import { memo } from "react";
+import { memo } from "react";
 
 interface Props {
   value: string;
   onChange: (value: string) => void;
 }
 
-export function SearchBar({ value, onChange }: Props) {
+function SearchBar({ value, onChange }: Props) {
   console.log("render: SearchBar");
   return (
     <input
@@ -17,4 +17,4 @@ export function SearchBar({ value, onChange }: Props) {
   );
 }
 
-// export default memo(SearchBar);
+export default memo(SearchBar);

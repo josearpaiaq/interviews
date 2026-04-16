@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { type Product } from "../data";
 
 interface Props {
@@ -5,7 +6,7 @@ interface Props {
   product: Product;
 }
 
-export function ProductRow({ product, index }: Props) {
+function ProductRow({ product, index }: Props) {
   console.log(`render: ProductRow — ${product.name}`);
   return (
     <tr>
@@ -16,3 +17,5 @@ export function ProductRow({ product, index }: Props) {
     </tr>
   );
 }
+
+export default memo(ProductRow);

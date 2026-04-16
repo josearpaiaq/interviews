@@ -1,5 +1,6 @@
+import { memo } from "react";
 import { type Product } from "../data";
-import {ProductRow} from "./ProductRow";
+import ProductRow from "./ProductRow";
 
 interface Props {
   items: Product[];
@@ -24,3 +25,5 @@ export function ProductList({ items }: Props) {
     </table>
   );
 }
+
+export default memo(ProductList);
