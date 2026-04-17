@@ -1,5 +1,6 @@
-import { memo, useEffect, useState } from "react";
-import { useDebounce } from "../hooks/useDebounce";
+import { memo } from "react";
+import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
+// import { useDebounce } from "../hooks/useDebounce";
 
 interface Props {
   onChange: (value: string) => void;
@@ -7,24 +8,26 @@ interface Props {
 
 function SearchBar({ onChange }: Props) {
   console.log("render: SearchBar");
-  const [value, setValue] = useState("");
 
-  const debouncedValue = useDebounce(value, 300);
+  const debouncedCallback = useDebouncedCallback(onChange, 300);
 
-  useEffect(() => {
-    onChange(debouncedValue);
-  }, [debouncedValue, onChange]);
+  // const [value, setValue] = useState("");
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-  };
+  // const debouncedValue = useDebounce(value, 300);
+
+  // useEffect(() => {
+  //   onChange(debouncedValue);
+  // }, [debouncedValue, onChange]);
+
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setValue(event.target.value);
+  // };
 
   return (
     <input
       type="text"
       placeholder="Search products..."
-      value={value}
-      onChange={handleChange}
+      onChange={(e) => debouncedCallback(e.target.value)}
     />
   );
 }
