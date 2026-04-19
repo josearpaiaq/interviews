@@ -3,7 +3,6 @@ import { AccordionContext } from "./AccordionContext";
 import { AccordionItem } from "./Accordion.Item";
 import { AccordionTrigger } from "./Accordion.Trigger";
 import { AccordionContent } from "./Accordion.Content";
-
 interface Props {
   multiple?: boolean; // Si se permiten varios items abiertos a la vez
   children: React.ReactNode;

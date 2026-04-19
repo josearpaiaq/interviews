@@ -1,7 +1,5 @@
-import {
-  useAccordion,
-  useAccordionItem,
-} from "./AccordionContext";
+import { useAccordion, useAccordionItem } from "./AccordionContext";
+import styles from "./accordion.module.css";
 
 interface Props {
   children: React.ReactNode;
@@ -14,21 +12,19 @@ export function AccordionTrigger({ children }: Props) {
   const isOpen = activeItem.includes(value);
 
   const handleClick = () => {
-    if (multiple) {
-      setActiveItem(
-        isOpen
-          ? activeItem.filter((item) => item !== value)
-          : [...activeItem, value],
-      );
+    if (isOpen) {
+      setActiveItem(activeItem.filter((item) => item !== value));
     } else {
-      setActiveItem(isOpen ? [] : [value]);
+      setActiveItem(multiple ? [...activeItem, value] : [value]);
     }
   };
 
   return (
-    <button onClick={handleClick}>
+    <button onClick={handleClick} className={styles.trigger}>
       {children}
-      <span>{isOpen ? "▲" : "▼"}</span>
+      <span className={`${styles.icon} ${isOpen ? styles.iconOpen : ""}`}>
+        ▼
+      </span>
     </button>
   );
 }

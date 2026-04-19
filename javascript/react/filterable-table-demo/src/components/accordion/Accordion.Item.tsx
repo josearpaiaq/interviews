@@ -1,5 +1,4 @@
 import { AccordionItemContext } from "./AccordionContext";
-
 interface Props {
   value: string;
   children: React.ReactNode;
