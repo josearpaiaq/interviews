@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
+import InputComponent from "../components/InputComponent";
 // import { useDebounce } from "../hooks/useDebounce";
 
 interface Props {
@@ -24,8 +25,7 @@ function SearchBar({ onChange }: Props) {
   // };
 
   return (
-    <input
-      type="text"
+    <InputComponent
       placeholder="Search products..."
       onChange={(e) => debouncedCallback(e.target.value)}
     />
