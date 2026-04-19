@@ -3,7 +3,7 @@ import { type Product, products } from "../data";
 import SearchBar from "./SearchBar";
 import SortControls from "./SortControls";
 import ProductList from "./ProductList";
-import withEmpty from "./HOC/withEmpty";
+import withEmpty from "../HOC/withEmpty";
 
 export interface SortConfig {
   key: keyof Omit<Product, "id">;
