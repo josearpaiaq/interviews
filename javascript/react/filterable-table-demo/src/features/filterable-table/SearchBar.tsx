@@ -1,6 +1,6 @@
 import { memo } from "react";
-import { useDebouncedCallback } from "../hooks/useDebouncedCallback";
-import InputComponent from "../components/InputComponent";
+import { useDebouncedCallback } from "../../hooks/useDebouncedCallback";
+import InputComponent from "../../components/InputComponent";
 // import { useDebounce } from "../hooks/useDebounce";
 
 interface Props {

@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { type Product } from "../data";
+import { type Product } from "../../data";
 
 interface Props {
   index: number;
