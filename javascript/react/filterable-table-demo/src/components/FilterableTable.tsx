@@ -3,11 +3,16 @@ import { type Product, products } from "../data";
 import SearchBar from "./SearchBar";
 import SortControls from "./SortControls";
 import ProductList from "./ProductList";
+import withEmpty from "./HOC/withEmpty";
 
 export interface SortConfig {
   key: keyof Omit<Product, "id">;
   direction: "asc" | "desc";
 }
+
+const ProductListWithEmpty = withEmpty(ProductList, {
+  emptyMessage: "No products match your search. Try a different query.",
+});
 
 export function FilterableTable() {
   console.log("render: FilterableTable");
@@ -29,21 +34,28 @@ export function FilterableTable() {
     }));
   }, []);
 
-  const filteredAndSorted = useMemo(() => products
-    .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
-    .sort((a, b) => {
-      const valA = a[sortConfig.key];
-      const valB = b[sortConfig.key];
-      if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
-      if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
-      return 0;
-    }), [ query, sortConfig ]);
+  const filteredAndSorted = useMemo(
+    () =>
+      products
+        .filter((p) => p.name.toLowerCase().includes(query.toLowerCase()))
+        .sort((a, b) => {
+          const valA = a[sortConfig.key];
+          const valB = b[sortConfig.key];
+          if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+          if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+          return 0;
+        }),
+    [query, sortConfig],
+  );
 
   return (
     <div>
       <SearchBar onChange={handleSearch} />
       <SortControls sortConfig={sortConfig} onSort={handleSort} />
-      <ProductList items={filteredAndSorted} />
+      <ProductListWithEmpty
+        items={filteredAndSorted}
+        message="No products match your search."
+      />
     </div>
   );
 }
