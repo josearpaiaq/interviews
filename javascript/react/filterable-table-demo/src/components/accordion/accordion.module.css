@@ -20,7 +20,6 @@
   height: 0px;
   overflow: hidden;
   transition: height 300ms ease;
-  background-color: #828c95;
 }
 
 .contentInner {
