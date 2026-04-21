@@ -1,0 +1,36 @@
+/* Light theme (default) */
+:root {
+  --color-bg: #ffffff;
+  --color-bg-surface: #f5f5f5;
+  --color-text-primary: #111111;
+  --color-text-secondary: #555555;
+  --color-border: #dddddd;
+  --color-button-bg: #111111;
+  --color-button-text: #ffffff;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --color-bg: #111111;
+  --color-bg-surface: #1e1e1e;
+  --color-text-primary: #f1f1f1;
+  --color-text-secondary: #aaaaaa;
+  --color-border: #333333;
+  --color-button-bg: #f1f1f1;
+  --color-button-text: #111111;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}

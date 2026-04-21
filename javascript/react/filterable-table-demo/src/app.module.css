@@ -1,0 +1,11 @@
+.app {
+  padding: .5rem;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  user-select: none;
+}
