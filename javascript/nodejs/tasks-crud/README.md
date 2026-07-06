@@ -22,7 +22,7 @@ npm run dev
 
 go to [localhost:3000](localhost:3000) and get a hello world endpoint
 
-## Test
+## Endpoints
 
 You can visit all these routes in this project
 
@@ -42,14 +42,24 @@ Delete a task
 DELETE /tasks/:id
 
 Start processing a task
-GET /tasks/:id/process
+POST /tasks/:id/process
 
 Start processing all the pending tasks
-POST /tasks/process/all
+GET /tasks/process/all
+Chose this endpoint to avoid colision with the /process pattern
+
+## Tests 
+
+You can run the tests with 
+
+```bash
+npm run test
+```
+
+This will give a detailed information about the tests of the app
 
 ## Questions
 
 1. ¿Por qué elegiste Promise.all o Promise.allSettled en process-all? ¿Qué cambia entre ambos ante un fallo?
-Promise.all will stop when one or the promises fails, Promise.allSettled will not fail in case of a faildure, will drop a summary of the promises fulfilled or failed with the value returned of the promises in the form of [{status: 'fulfilled' | 'failed', value: any}]
-2. ¿Cómo escalarías el procesamiento asíncrono si en producción hubiera miles de tareas y un solo proceso Node? Menciona al menos una alternativa al enfoque in-process.
-An idea for this could be the used of workers because we know that node is not multithreading but with workers to we can delegate responsabilities with many threads working at the same time and responding when done
+Promise.all will stop when one or the promises fails, Promise.allSettled will not fail in case of a failure, will drop a summary of the promises fulfilled or failed with the value returned of the promises in the form of [{status: 'fulfilled' | 'rejected', value?: any, reason?: string}]
+2. ¿Cómo escalarías el procesamiento asíncrono si en producción hubiera miles de tareas y un solo proceso Node? This could be handle with a stack with services like SQS or redis but still have to make a little more research about how to handle a massive tasks creation
