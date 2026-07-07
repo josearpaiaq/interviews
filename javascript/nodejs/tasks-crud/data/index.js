@@ -34,7 +34,7 @@ export const findAllTasks = (status = "") => {
 };
 
 export const createNewTask = (body) => {
-  const newId = Math.max(...tasks.map((t) => t.id)) + 1;
+  const newId = Math.max(...tasks.map((t) => t.id), 0) + 1;
 
   const task = {
     ...body,
