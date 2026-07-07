@@ -8,24 +8,24 @@ let tasks: Task[] = [
     status: "pending",
     createdAt: "2026-06-30T23:20:34.692Z",
   },
-  {
-    id: 2,
-    title: "comprar comida",
-    status: "pending",
-    createdAt: "2026-06-30T23:20:35.692Z",
-  },
-  {
-    id: 3,
-    title: "limpiar",
-    status: "pending",
-    createdAt: "2026-06-30T23:20:36.692Z",
-  },
-  {
-    id: 4,
-    title: "mejorar",
-    status: "pending",
-    createdAt: "2026-06-30T23:20:37.692Z",
-  },
+  // {
+  //   id: 2,
+  //   title: "comprar comida",
+  //   status: "pending",
+  //   createdAt: "2026-06-30T23:20:35.692Z",
+  // },
+  // {
+  //   id: 3,
+  //   title: "limpiar",
+  //   status: "pending",
+  //   createdAt: "2026-06-30T23:20:36.692Z",
+  // },
+  // {
+  //   id: 4,
+  //   title: "mejorar",
+  //   status: "pending",
+  //   createdAt: "2026-06-30T23:20:37.692Z",
+  // },
 ];
 
 export const findAllTasks = (status: TaskStatus): Task[] => {
@@ -36,11 +36,11 @@ export const findAllTasks = (status: TaskStatus): Task[] => {
 };
 
 export const createNewTask = (body: Pick<Task, 'title'>): Task => {
-  const newId = Math.max(...tasks.map((t) => t.id)) + 1;
+  const newId = Math.max(...tasks.map((t) => t.id), 0) + 1;
 
   const task: Task = {
     ...body,
-    id: newId,
+    id: newId ?? 1,
     status: "pending",
     createdAt: new Date(),
   };
