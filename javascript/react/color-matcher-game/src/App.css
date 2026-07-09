@@ -1,0 +1,14 @@
+.App * {
+  font-family: Arial, sans-serif;
+  padding: 5px;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.cube {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
